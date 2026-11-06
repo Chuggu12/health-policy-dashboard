@@ -51,6 +51,7 @@
   };
 
   const charts = {};
+  let last = null; // latest records and isActive, for replay()
 
   function countBy(records, field) {
     const counts = new Map();
@@ -273,6 +274,7 @@
     }
 
     return {
+      chart,
       update(records, isActive) {
         updateLegend(isActive);
         const isEmpty = records.length === 0;
@@ -314,7 +316,7 @@
           grid: { top: 14, right: 8, bottom: 4, left: 4, containLabel: true },
           tooltip: tooltipBase({
             trigger: 'axis',
-            axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(255, 255, 255, 0.08)' } },
+            axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(0, 66, 114, 0.07)' } },
             formatter: tooltip
           }),
           xAxis: {
@@ -388,6 +390,7 @@
     }
 
     return {
+      chart,
       update(records, isActive) {
         const isEmpty = records.length === 0;
         setEmpty(parts, isEmpty);
@@ -436,7 +439,7 @@
             barMaxWidth: opts.barMaxWidth,
             cursor: 'pointer',
             showBackground: true,
-            backgroundStyle: { color: 'rgba(255, 255, 255, 0.05)', borderRadius: 4 },
+            backgroundStyle: { color: 'rgba(0, 66, 114, 0.05)', borderRadius: 4 },
             label: {
               show: true,
               position: 'right',
@@ -538,6 +541,7 @@
     }
 
     return {
+      chart,
       update(records, isActive) {
         const isEmpty = records.length === 0;
         setEmpty(parts, isEmpty);
@@ -633,10 +637,19 @@
     update(records, state) {
       const recs = Array.isArray(records) ? records : [];
       const isActive = (state && state.isActive) || noActive;
+      last = { recs, isActive };
       extendUniverse(recs);
       for (const key of ['years', 'topics', 'regions', 'levels']) {
         if (charts[key]) charts[key].update(recs, isActive);
       }
+    },
+
+    // redraw one chart from scratch so its entrance animation plays when it scrolls into view
+    replay(key) {
+      const c = charts[key];
+      if (!c || !c.chart || !last) return;
+      c.chart.clear();
+      c.update(last.recs, last.isActive);
     }
   };
 })();

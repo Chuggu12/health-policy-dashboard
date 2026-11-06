@@ -9,6 +9,8 @@
   const ALL_LABEL = { topic: 'All topics', region: 'All regions', country: 'All countries', type: 'Both types', level: 'All levels', year: 'All years' };
   const PAGE = 20;
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const kpiShown = new Map(); // number on screen per headline figure, so changes count from there
   const filters = Object.fromEntries(FIELDS.map((f) => [f, new Set()]));
   let terms = [];
   let markRe = null;
@@ -146,17 +148,67 @@
     const span = !years.length ? '&ndash;'
       : years[0] === years[years.length - 1] ? years[0] : `${years[0]}&ndash;${years[years.length - 1]}`;
     const swatch = (color) => `<span class="swatch" style="background:${color}" aria-hidden="true"></span>`;
+    const num = (name, n) => `<span class="kpi-num" data-name="${name}" data-to="${n}">${fmt(kpiShown.get(name) || 0)}</span>`;
     const kpi = (value, text) => `<div class="kpi"><span class="kpi-value">${value}</span><span class="kpi-label">${text}</span></div>`;
     $('kpis').innerHTML = [
-      kpi(fmt(rows.length), rows.length === 1 ? 'Record' : 'Records'),
-      kpi(swatch(T.type['Policy Impact']) + fmt(policy), 'Policy changes'),
-      kpi(swatch(T.type['Systems/Practice Impact']) + fmt(rows.length - policy), 'Systems or practice changes'),
-      kpi(fmt(countries), countries === 1 ? 'Country' : 'Countries'),
+      kpi(num('records', rows.length), rows.length === 1 ? 'Record' : 'Records'),
+      kpi(swatch(T.type['Policy Impact']) + num('policy', policy), 'Policy changes'),
+      kpi(swatch(T.type['Systems/Practice Impact']) + num('systems', rows.length - policy), 'Systems or practice changes'),
+      kpi(num('countries', countries), countries === 1 ? 'Country' : 'Countries'),
       kpi(span, 'Years covered')
     ].join('');
+    $('kpis').querySelectorAll('.kpi-num').forEach((el) => {
+      const to = Number(el.dataset.to);
+      countUp(el, kpiShown.get(el.dataset.name) || 0, to);
+      kpiShown.set(el.dataset.name, to);
+    });
   }
 
-  function recordHtml(r) {
+  // headline figures count from their old value to the new one
+  function countUp(el, from, to) {
+    if (reduceMotion || from === to) {
+      el.textContent = fmt(to);
+      return;
+    }
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / 800);
+      el.textContent = fmt(Math.round(from + (to - from) * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  // blocks fade up as they scroll into view, and their chart replays its entrance
+  function setUpReveal() {
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    const replay = {
+      'map': () => window.MapView && window.MapView.replay && window.MapView.replay(),
+      'chart-years': () => window.Charts && window.Charts.replay && window.Charts.replay('years'),
+      'chart-topics': () => window.Charts && window.Charts.replay && window.Charts.replay('topics'),
+      'chart-regions': () => window.Charts && window.Charts.replay && window.Charts.replay('regions'),
+      'chart-levels': () => window.Charts && window.Charts.replay && window.Charts.replay('levels')
+    };
+    const blocks = [...document.querySelectorAll('.filters, .panel, .records-head')];
+    const watcher = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const block = entry.target;
+        watcher.unobserve(block);
+        block.classList.add('is-visible');
+        const chart = block.querySelector('#map, #chart-years, #chart-topics, #chart-regions, #chart-levels');
+        if (chart) safely(replay[chart.id]);
+        setTimeout(() => block.style.removeProperty('--delay'), 1500);
+      }
+    }, { threshold: 0.15 });
+    blocks.forEach((block, i) => {
+      block.classList.add('reveal');
+      block.style.setProperty('--delay', `${(i % 3) * 90}ms`);
+      watcher.observe(block);
+    });
+  }
+
+  function recordHtml(r, i) {
     const where = r.place && r.place !== r.country ? `${r.place}, ${r.country}` : r.country;
     const extra = [
       ['Impact', r.impact],
@@ -166,7 +218,7 @@
     const more = extra.length
       ? `<details><summary>Impact, role and partners</summary><dl>${extra.map(([dt, dd]) => `<dt>${dt}</dt><dd>${highlight(dd)}</dd>`).join('')}</dl></details>`
       : '';
-    return `<li class="record">
+    return `<li class="record" style="--i:${i % PAGE}">
       <div class="record-meta">
         <span class="record-year">${isYear(r.year) ? r.year : 'Year not recorded'}</span>
         <span class="record-place">${highlight(where)}</span>
@@ -262,6 +314,7 @@
       }, opts));
     }
     refresh();
+    setUpReveal();
   }
 
   init();

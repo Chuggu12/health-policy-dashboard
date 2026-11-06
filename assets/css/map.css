@@ -136,3 +136,19 @@
   justify-content: space-between;
   gap: 12px;
 }
+
+/* the tooltip box stays dark on the white page, so its text keeps light colours */
+.map-tip strong,
+.map-tip li b {
+  color: #ffffff;
+}
+
+.map-tip-count,
+.map-tip-split,
+.map-tip ul {
+  color: #d6e4f0;
+}
+
+.map-tip ul {
+  border-top-color: rgba(255, 255, 255, 0.18);
+}

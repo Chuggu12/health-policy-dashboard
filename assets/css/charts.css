@@ -150,3 +150,17 @@
     transition: none;
   }
 }
+
+/* the tooltip box stays dark on the white page, so its text keeps light colours */
+.chart-tip-title,
+.chart-tip-value {
+  color: #ffffff;
+}
+
+.chart-tip-name {
+  color: #d6e4f0;
+}
+
+.chart-tip-total {
+  border-top-color: rgba(255, 255, 255, 0.18);
+}

@@ -165,7 +165,7 @@
         borderColor: T.rule,
         borderWidth: 1,
         padding: [8, 10],
-        textStyle: { color: T.ink, fontFamily: T.font, fontSize: 13 },
+        textStyle: { color: '#ffffff', fontFamily: T.font, fontSize: 13 },
         extraCssText: 'border-radius:6px;box-shadow:0 8px 24px rgba(0,20,40,.35);',
         formatter: tooltip
       },
@@ -183,7 +183,7 @@
         top: 'middle',
         label: { show: false },
         itemStyle: { areaColor: T.land, borderColor: T.bg, borderWidth: 0.6 },
-        emphasis: { label: { show: false }, itemStyle: { areaColor: '#3d8fc9' } },
+        emphasis: { label: { show: false }, itemStyle: { areaColor: T.landHover } },
         select: { disabled: true }
       },
       series: [
@@ -275,5 +275,12 @@
       : '';
   }
 
-  window.MapView = { init, update };
+  // empty the bubbles, then draw them again so they grow in when the map scrolls into view
+  function replay() {
+    if (!ready || !chart) return;
+    chart.setOption({ series: [{ id: 'dots', data: [] }, { id: 'pulse', data: [] }] });
+    requestAnimationFrame(draw);
+  }
+
+  window.MapView = { init, update, replay };
 })();

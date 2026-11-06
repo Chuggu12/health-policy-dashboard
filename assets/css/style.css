@@ -1,24 +1,39 @@
-/* Health Policy Dashboard: page layout, type and shared tokens.
+/* Health Policy Dashboard: page layout, type, colours and motion.
    Map and chart styles live in map.css and charts.css. */
 
-/* Vital Strategies blue and orange (from the CANARY Technical Appendix, 2026).
-   Text colours are checked for at least 4.5:1 contrast on --paper and --card. */
+/* Vital Strategies blue and orange (from the CANARY Technical Appendix, 2026): a blue header and
+   footer around white content, like vitalstrategies.org. Text colours keep at least 4.5:1 contrast. */
 :root {
-  color-scheme: dark;
-  --paper: #004272;
-  --card: #0b4b7c;
-  --field: #003660;
-  --ink: #ffffff;
-  --ink-2: #d6e4f0;
-  --muted: #a9c4d8;
-  --rule: rgba(255, 255, 255, 0.16);
-  --land: #1a5c8f;
-  --accent: #ff9a5c;
+  --brand: #004272;
+  --paper: #ffffff;
+  --card: #ffffff;
+  --tint: #f3f7fa;
+  --field: #ffffff;
+  --ink: #0b2540;
+  --ink-2: #3d5468;
+  --muted: #5f7385;
+  --rule: #dbe4ec;
+  --land: #dbe7f0;
+  --accent: #c94400;
   --accent-strong: #ff5a00;
-  --slate: #5cc8f0;
+  --slate: #0a5fa3;
   --font-head: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --font-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
   --wrap: 1200px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* the blue bands reuse the same names with light values */
+.masthead,
+.site-footer {
+  --ink: #ffffff;
+  --ink-2: #d6e4f0;
+  --muted: #a9c4d8;
+  --rule: rgba(255, 255, 255, 0.18);
+  --accent: #ff9a5c;
+  --slate: #9fd3ff;
+  background: var(--brand);
+  color: var(--ink);
 }
 
 *,
@@ -49,7 +64,7 @@ a:hover {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-strong);
   outline-offset: 2px;
 }
 
@@ -63,8 +78,8 @@ a:hover {
   position: absolute;
   left: 12px;
   top: -48px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--brand);
+  color: #ffffff;
   padding: 8px 12px;
   z-index: 10;
 }
@@ -82,10 +97,27 @@ a:hover {
   white-space: nowrap;
 }
 
-/* ---------- masthead ---------- */
+/* ---------- blue header ---------- */
 
 .masthead {
-  padding: 36px 0 20px;
+  position: relative;
+  overflow: hidden;
+  padding: 44px 0 0;
+}
+
+/* a soft light in the top corner, so the band isn't flat */
+.masthead::before {
+  content: '';
+  position: absolute;
+  inset: -40% -10% auto auto;
+  width: 60%;
+  height: 160%;
+  background: radial-gradient(closest-side, rgba(92, 200, 240, 0.18), transparent);
+  pointer-events: none;
+}
+
+.masthead .wrap {
+  position: relative;
 }
 
 .kicker {
@@ -115,18 +147,17 @@ h2 {
   font: 600 1.2rem/1.25 var(--font-head);
 }
 
-/* ---------- headline numbers ---------- */
+/* ---------- headline numbers (in the header) ---------- */
 
 .kpis {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 20px;
+  margin-top: 30px;
+  border-top: 1px solid var(--rule);
 }
 
 .kpi {
-  padding: 14px 16px 12px 0;
+  padding: 16px 16px 26px 0;
 }
 
 .kpi + .kpi {
@@ -153,12 +184,14 @@ h2 {
   height: 0.5em;
   margin-right: 0.25em;
   vertical-align: 0.15em;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
 /* ---------- filters ---------- */
 
 .filters {
-  margin-bottom: 20px;
+  margin: 28px 0 22px;
 }
 
 .filter-row {
@@ -189,19 +222,25 @@ h2 {
   min-width: 0;
   height: 40px;
   padding: 0 10px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 4px;
+  border: 1px solid #c5d3df;
+  border-radius: 6px;
   background: var(--field);
   color: var(--ink);
   font: inherit;
   font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field input:hover,
+.field select:hover {
+  border-color: #9fb6c9;
 }
 
 .field input:focus-visible,
 .field select:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 0;
-  border-color: var(--accent);
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(0, 66, 114, 0.2);
 }
 
 .chips {
@@ -209,18 +248,18 @@ h2 {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
-  min-height: 0;
 }
 
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 6px 4px 10px;
-  border: 1px solid var(--ink);
-  border-radius: 2px;
-  background: var(--card);
+  padding: 3px 5px 3px 12px;
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  background: var(--tint);
   font-size: 0.85rem;
+  animation: rise 0.35s var(--ease) both;
 }
 
 .chip-field {
@@ -233,7 +272,7 @@ h2 {
   width: 22px;
   height: 22px;
   border: 0;
-  border-radius: 2px;
+  border-radius: 50%;
   background: transparent;
   color: var(--ink);
   font-size: 1rem;
@@ -242,7 +281,8 @@ h2 {
 }
 
 .chip button:hover {
-  background: var(--land);
+  background: var(--brand);
+  color: #ffffff;
 }
 
 .chip-clear {
@@ -263,17 +303,19 @@ h2 {
 .board {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: 18px;
+  margin-bottom: 32px;
 }
 
 .panel {
   grid-column: span 2;
   min-width: 0;
-  padding: 16px 18px 18px;
+  padding: 18px 20px 20px;
   background: var(--card);
-  border-top: 3px solid var(--accent-strong);
-  border-radius: 0 0 6px 6px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--brand);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 36, 63, 0.05), 0 12px 32px -20px rgba(0, 36, 63, 0.3);
 }
 
 .panel-map {
@@ -288,6 +330,10 @@ h2 {
   margin-bottom: 12px;
 }
 
+.panel-head h2 {
+  color: var(--brand);
+}
+
 .panel-note {
   margin: 4px 0 0;
   font-size: 0.85rem;
@@ -297,7 +343,7 @@ h2 {
 /* ---------- records ---------- */
 
 .records {
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .records:focus {
@@ -311,11 +357,12 @@ h2 {
   justify-content: space-between;
   gap: 4px 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 2px solid var(--brand);
 }
 
 .records-head h2 {
   font-size: 1.6rem;
+  color: var(--brand);
 }
 
 .records-count {
@@ -336,6 +383,8 @@ h2 {
   gap: 6px 24px;
   padding: 18px 0;
   border-bottom: 1px solid var(--rule);
+  animation: rise 0.5s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 35ms);
 }
 
 .record-meta {
@@ -346,7 +395,7 @@ h2 {
 .record-year {
   display: block;
   font: 600 1.35rem/1.1 var(--font-head);
-  color: var(--ink);
+  color: var(--brand);
 }
 
 .record-place {
@@ -375,6 +424,7 @@ h2 {
   content: '';
   width: 9px;
   height: 9px;
+  border-radius: 2px;
   background: var(--tag, var(--muted));
 }
 
@@ -419,8 +469,8 @@ h2 {
 }
 
 mark {
-  background: #ffc145;
-  color: #00243f;
+  background: #ffe0c7;
+  color: inherit;
   padding: 0 1px;
 }
 
@@ -431,33 +481,89 @@ mark {
 
 .more {
   display: block;
-  margin: 20px auto 0;
-  padding: 10px 22px;
-  border: 1px solid var(--ink);
-  border-radius: 2px;
+  margin: 24px auto 0;
+  padding: 10px 24px;
+  border: 1px solid var(--brand);
+  border-radius: 999px;
   background: var(--card);
-  color: var(--ink);
+  color: var(--brand);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .more:hover {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--brand);
+  color: #ffffff;
 }
 
-/* ---------- footer ---------- */
+/* ---------- blue footer ---------- */
 
 .site-footer {
-  padding: 18px 0 32px;
-  border-top: 1px solid var(--rule);
-  font-size: 0.85rem;
-  color: var(--muted);
+  padding: 26px 0 34px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
 }
 
 .site-footer p {
   margin: 0;
+}
+
+.site-footer strong {
+  color: var(--ink);
+}
+
+/* ---------- motion ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* the header comes in line by line */
+.masthead .kicker,
+.masthead h1,
+.masthead .lede,
+.masthead .kpis {
+  animation: rise 0.8s var(--ease) both;
+}
+
+.masthead h1 {
+  animation-delay: 0.08s;
+}
+
+.masthead .lede {
+  animation-delay: 0.16s;
+}
+
+.masthead .kpis {
+  animation-delay: 0.26s;
+}
+
+/* app.js adds .reveal and then .is-visible as each block scrolls into view */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease), box-shadow 0.3s var(--ease);
+  transition-delay: var(--delay, 0s);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.panel.is-visible:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 4px rgba(0, 36, 63, 0.06), 0 20px 40px -20px rgba(0, 36, 63, 0.4);
 }
 
 /* ---------- smaller screens ---------- */
@@ -537,5 +643,10 @@ mark {
     transition: none !important;
     animation: none !important;
     scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
