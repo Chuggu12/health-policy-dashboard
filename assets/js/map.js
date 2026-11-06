@@ -177,10 +177,10 @@
           project: (point) => projection(point),
           unproject: (point) => projection.invert(point)
         },
-        top: 8,
-        bottom: 8,
+        // only the sides are fixed, so the height follows the map's own shape instead of stretching
         left: 8,
         right: 8,
+        top: 'middle',
         label: { show: false },
         itemStyle: { areaColor: T.land, borderColor: T.bg, borderWidth: 0.6 },
         emphasis: { label: { show: false }, itemStyle: { areaColor: '#3d8fc9' } },

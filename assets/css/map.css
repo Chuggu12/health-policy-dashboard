@@ -6,8 +6,8 @@
 
 .map-canvas {
   width: 100%;
-  aspect-ratio: 1.9 / 1;
-  min-height: 240px;
+  aspect-ratio: 2.1 / 1;
+  min-height: 170px;
   max-height: 520px;
   cursor: grab;
 }
