@@ -6,7 +6,7 @@
   const UNMAPPED = (window.GEO && window.GEO.unmapped) || [];
   const FIELDS = ['topic', 'region', 'type', 'level', 'year', 'country'];
   const FIELD_NAMES = { topic: 'Topic', region: 'Region', type: 'Type', level: 'Level', year: 'Year', country: 'Country' };
-  const ALL_LABEL = { topic: 'All topics', region: 'All regions', type: 'Both types', level: 'All levels', year: 'All years' };
+  const ALL_LABEL = { topic: 'All topics', region: 'All regions', country: 'All countries', type: 'Both types', level: 'All levels', year: 'All years' };
   const PAGE = 20;
 
   const filters = Object.fromEntries(FIELDS.map((f) => [f, new Set()]));
@@ -32,9 +32,10 @@
     label('region', r.region), label('level', r.level), label('type', r.type)
   ].join(' ').toLowerCase());
 
-  function matches(r, i) {
+  // skip leaves one field's filter out, so the map can keep showing other countries to add
+  function matches(r, i, skip) {
     for (const f of FIELDS) {
-      if (filters[f].size && !filters[f].has(r[f])) return false;
+      if (f !== skip && filters[f].size && !filters[f].has(r[f])) return false;
     }
     return terms.every((w) => haystack[i].includes(w));
   }
@@ -61,6 +62,7 @@
     const order = {
       topic: (a, b) => a.localeCompare(b),
       region: (a, b) => counts.region.get(b) - counts.region.get(a),
+      country: (a, b) => a.localeCompare(b),
       type: (a, b) => a.localeCompare(b),
       level: (a, b) => T.levelOrder.indexOf(a) - T.levelOrder.indexOf(b),
       year: (a, b) => (isYear(b) ? +b : 0) - (isYear(a) ? +a : 0)
@@ -204,13 +206,14 @@
 
   function refresh(keepPage) {
     if (!keepPage) shown = PAGE;
-    current = RECORDS.filter(matches).sort(byDate);
+    current = RECORDS.filter((r, i) => matches(r, i)).sort(byDate);
     syncSelects();
     renderChips();
     renderKpis(current);
     renderList(current);
     const view = { isActive };
-    if (window.MapView) safely(() => window.MapView.update(current, view));
+    const forMap = RECORDS.filter((r, i) => matches(r, i, 'country'));
+    if (window.MapView) safely(() => window.MapView.update(forMap, view));
     if (window.Charts) safely(() => window.Charts.update(current, view));
   }
 

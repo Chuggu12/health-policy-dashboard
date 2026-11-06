@@ -41,6 +41,10 @@
           <select id="f-region" data-field="region"></select>
         </label>
         <label class="field">
+          <span class="field-label">Country</span>
+          <select id="f-country" data-field="country"></select>
+        </label>
+        <label class="field">
           <span class="field-label">Type of change</span>
           <select id="f-type" data-field="type"></select>
         </label>
@@ -60,7 +64,7 @@
       <article class="panel panel-map">
         <header class="panel-head">
           <h2>Where the changes happened</h2>
-          <p class="panel-note">Circle size shows the number of records. Select a country to filter by it.</p>
+          <p class="panel-note">Circle size shows the number of records. Scroll or pinch to zoom, drag to move, and select a country to filter by it.</p>
         </header>
         <div id="map" class="map"></div>
       </article>
@@ -68,7 +72,7 @@
       <article class="panel panel-years">
         <header class="panel-head">
           <h2>Year by year</h2>
-          <p class="panel-note">Select a year to filter by it.</p>
+          <p class="panel-note">Select a column to filter by year, or a key item to filter by type.</p>
         </header>
         <div id="chart-years"></div>
       </article>
@@ -109,6 +113,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/geo.js"></script>
   <script src="assets/js/theme.js"></script>
