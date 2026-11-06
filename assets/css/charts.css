@@ -1,0 +1,233 @@
+/* Charts: year columns and category bar lists.
+   Print-like on purpose: thin rules, square bar ends, no shadows or gradients. */
+
+.chart {
+  min-width: 0;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.chart-empty {
+  margin: 0;
+  padding: 24px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- year chart ---------- */
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin: 0 0 10px;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 0 3px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chart-legend-item:hover {
+  color: var(--ink);
+  border-bottom-color: var(--rule);
+}
+
+.chart-legend-item[aria-pressed="true"] {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom-color: var(--ink);
+}
+
+/* when one type is chosen, the other steps back */
+.chart-legend.has-active .chart-legend-item[aria-pressed="false"] {
+  opacity: 0.55;
+}
+
+.chart-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+}
+
+.chart-plot {
+  position: relative;
+  min-width: 0;
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-grid line {
+  stroke: var(--rule);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.chart-grid .is-base line {
+  stroke: var(--ink);
+}
+
+.chart-grid text,
+.chart-axis text {
+  fill: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.chart-axis text {
+  fill: var(--ink-2);
+}
+
+.chart-axis text.is-active {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.chart-col {
+  cursor: pointer;
+  outline: none;
+}
+
+.chart-col-hit {
+  fill: transparent;
+}
+
+.chart-col:hover .chart-col-hit {
+  fill: var(--rule);
+  fill-opacity: 0.45;
+}
+
+/* SVG groups ignore outline in some browsers, so the hit area draws the focus ring */
+.chart-col:focus-visible .chart-col-hit {
+  stroke: var(--accent);
+  stroke-width: 2px;
+}
+
+.chart-seg {
+  shape-rendering: crispEdges;
+  transition: opacity 300ms ease;
+}
+
+.chart-col.is-dim .chart-seg {
+  opacity: 0.38;
+}
+
+.chart-svg-empty {
+  fill: var(--muted);
+  font-size: 13px;
+}
+
+/* ---------- category lists ---------- */
+
+.chart-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.chart-row {
+  border-bottom: 1px solid var(--rule);
+}
+
+.chart-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: baseline;
+  width: 100%;
+  padding: 6px 2px 7px 8px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.88rem;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chart-item:hover {
+  background: var(--paper);
+}
+
+.chart-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.chart-item[aria-pressed="true"] {
+  border-left-color: var(--accent);
+  background: var(--paper);
+}
+
+.chart-item[aria-pressed="true"] .chart-item-label {
+  font-weight: 600;
+}
+
+.chart-item-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chart-item-count {
+  color: var(--ink-2);
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: right;
+}
+
+.chart-item[aria-pressed="true"] .chart-item-count {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.chart-item-track {
+  grid-column: 1 / -1;
+  display: block;
+  height: 6px;
+}
+
+.chart-item-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms ease;
+}
+
+.chart-item-bar-soft {
+  opacity: 0.55;
+}
+
+/* values the filters hide stay listed, dimmed, at 0 */
+.chart-row.is-zero .chart-item-label,
+.chart-row.is-zero .chart-item-count {
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-seg,
+  .chart-item-bar {
+    transition: none;
+  }
+}
