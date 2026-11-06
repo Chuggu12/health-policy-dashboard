@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Health Policy Dashboard</title>
+  <meta name="description" content="Policy and systems changes supported by Vital Strategies, by country, topic, year and level of government.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/map.css">
+  <link rel="stylesheet" href="assets/css/charts.css">
+</head>
+<body>
+  <a class="skip-link" href="#records">Skip to the records</a>
+
+  <header class="masthead">
+    <div class="wrap">
+      <p class="kicker">Vital Strategies &middot; Policy and systems change</p>
+      <h1>Health Policy Dashboard</h1>
+      <p class="lede" id="lede">Where policy and practice changed, and what changed.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="kpis" id="kpis" aria-label="Totals for the current selection"></section>
+
+    <section class="filters" aria-label="Filters">
+      <div class="filter-row">
+        <label class="field field-search">
+          <span class="field-label">Search</span>
+          <input id="search" type="search" placeholder="Country, place, partner or any text" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Topic</span>
+          <select id="f-topic" data-field="topic"></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Region</span>
+          <select id="f-region" data-field="region"></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Type of change</span>
+          <select id="f-type" data-field="type"></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Level</span>
+          <select id="f-level" data-field="level"></select>
+        </label>
+        <label class="field">
+          <span class="field-label">Year</span>
+          <select id="f-year" data-field="year"></select>
+        </label>
+      </div>
+      <div class="chips" id="chips" aria-live="polite"></div>
+    </section>
+
+    <section class="board" aria-label="Charts">
+      <article class="panel panel-map">
+        <header class="panel-head">
+          <h2>Where the changes happened</h2>
+          <p class="panel-note">Circle size shows the number of records. Select a country to filter by it.</p>
+        </header>
+        <div id="map" class="map"></div>
+      </article>
+
+      <article class="panel panel-years">
+        <header class="panel-head">
+          <h2>Year by year</h2>
+          <p class="panel-note">Select a year to filter by it.</p>
+        </header>
+        <div id="chart-years"></div>
+      </article>
+
+      <article class="panel">
+        <header class="panel-head"><h2>Topic</h2></header>
+        <div id="chart-topics"></div>
+      </article>
+
+      <article class="panel">
+        <header class="panel-head"><h2>Region</h2></header>
+        <div id="chart-regions"></div>
+      </article>
+
+      <article class="panel">
+        <header class="panel-head"><h2>Level of government</h2></header>
+        <div id="chart-levels"></div>
+      </article>
+    </section>
+
+    <section class="records" id="records" aria-labelledby="records-title" tabindex="-1">
+      <header class="records-head">
+        <h2 id="records-title">The records</h2>
+        <p id="records-count" class="records-count" aria-live="polite"></p>
+      </header>
+      <ol id="record-list" class="record-list"></ol>
+      <button id="more" class="more" type="button" hidden>Show more</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Data: Vital Strategies policy and systems change records, as compiled in
+        <a href="https://anuragmishraapplications-lab.github.io/vital-impact-dashboard/dashboard.html">One Vital Platform</a>
+        by Anurag Mishra.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/geo.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/map.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
