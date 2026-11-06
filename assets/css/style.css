@@ -497,21 +497,12 @@ mark {
     border-bottom: 1px solid var(--rule);
   }
 
-  .kpi:nth-child(even) {
-    padding-left: 12px;
-    border-left: 1px solid var(--rule);
-  }
-
   .kpi:first-child {
     grid-column: 1 / -1;
   }
 
-  .kpi:first-child + .kpi {
-    padding-left: 0;
-    border-left: 0;
-  }
-
-  .kpi:first-child + .kpi + .kpi {
+  /* the first figure spans the row, so the right-hand figures are the odd ones */
+  .kpi:nth-child(odd):not(:first-child) {
     padding-left: 12px;
     border-left: 1px solid var(--rule);
   }

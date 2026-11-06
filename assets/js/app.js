@@ -23,6 +23,8 @@
   const isActive = (field, value) => Boolean(filters[field] && filters[field].has(value));
   const realCountry = (c) => c && !UNMAPPED.includes(c);
   const isYear = (y) => /^\d{4}$/.test(y);
+  // 'Gender Based Violence' and 'Gender-Based Violence' count as the same name
+  const simple = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
 
   // one lowercase string per record, so search doesn't rebuild it on every key press
   const haystack = RECORDS.map((r) => [
@@ -172,7 +174,7 @@
         <div class="record-tags">
           <span class="tag" style="--tag:${T.topic[r.topic] || T.muted}">${esc(r.topic)}</span>
           <span class="tag" style="--tag:${T.type[r.type] || T.muted}">${esc(label('type', r.type))}</span>
-          ${r.program ? `<span>${esc(r.program)}</span>` : ''}
+          ${r.program && simple(r.program) !== simple(r.topic) ? `<span>${esc(r.program)}</span>` : ''}
         </div>
         <p class="record-text">${highlight(r.details || 'No description recorded.')}</p>
         ${more}
