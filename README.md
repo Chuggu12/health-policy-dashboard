@@ -4,6 +4,10 @@
   <strong>457 policy and systems changes. 70 countries. One interactive map of where health policy moved.</strong>
 </p>
 
+<h3 align="center">
+  Live website: <a href="https://chuggu12.github.io/health-policy-dashboard/">https://chuggu12.github.io/health-policy-dashboard/</a>
+</h3>
+
 <p align="center">
   <a href="https://chuggu12.github.io/health-policy-dashboard/"><img alt="Open the live dashboard" src="https://img.shields.io/badge/open-live%20dashboard-ff5a00?style=for-the-badge"></a>
   <img alt="Apache ECharts 6.1" src="https://img.shields.io/badge/Apache%20ECharts-6.1-004272?style=for-the-badge">
@@ -95,5 +99,5 @@ Powered by Vital Strategies data: policy and systems change records. Each record
 ---
 
 <p align="center">
-  Made by <a href="https://github.com/Chuggu12">Chuggu12</a> &middot; <a href="https://chuggu12.github.io/health-policy-dashboard/">see it live</a>
+  Made by <a href="https://github.com/Chuggu12">Chuggu12</a> &middot; Live at <a href="https://chuggu12.github.io/health-policy-dashboard/">chuggu12.github.io/health-policy-dashboard</a>
 </p>
